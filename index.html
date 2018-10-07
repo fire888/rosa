@@ -1,0 +1,99 @@
+<html>
+<head>
+</head>
+
+
+<body>
+<canvas id="myCanvas"></canvas>
+<script src="js/three.min.js"></script>
+<script src="js/OBJLoader.js"></script>
+<script src="js/FirstPersonControls.js"></script>	
+	
+	
+<script>
+
+window.onload = () => {    
+var personControl = true;   
+var camera, scene, renderer, player, clock;
+var INV_MAX_FPS = 0.01, frameDelta = 0;
+
+myCanvas = document.getElementById('myCanvas');
+
+
+//RENDERER
+renderer = new THREE.WebGLRenderer( {
+  canvas: myCanvas, 
+  antialias: true
+} );
+renderer.setClearColor(0x000000);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+//CAMERA
+camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 0.1, 1000 );
+camera.position.y = 2;
+	
+clock = new THREE.Clock();
+player = new THREE.FirstPersonControls(camera);
+player.movementSpeed = 100;
+player.lookSpeed = 0.1;
+
+
+scene = new THREE.Scene();
+var light = new THREE.AmbientLight(0xffffff, 0.5);
+light.position.set(5, 5, 5);
+scene.add(light);
+
+var light2 = new THREE.PointLight(0xffffff, 0.5);
+scene.add(light2);
+light2.position.set(5,5,7);
+
+var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 5, 5);
+var floorMaterial = new THREE.MeshPhongMaterial();	
+var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+floorMesh.receiveShadow = true;
+floorMesh.position.x = -300; 
+floorMesh.position.y = -2.0;		
+floorMesh.rotation.x = -0.5 * Math.PI;
+scene.add(floorMesh); 	
+    
+	
+var delta = 0;
+var prevTime = Date.now();	
+
+var OBJLoader = new THREE.OBJLoader()
+OBJLoader.load( 'assets/walls.obj', function( obj ) {
+    var mat = new THREE.MeshPhongMaterial( { color: 0x332233 } )
+	obj.traverse( function( child ){
+     if ( child instanceof THREE.Mesh != true ) return
+     var mesh = new THREE.Mesh( child.geometry, mat )
+	 scene.add( mesh )
+    }) 
+}  )
+
+
+requestAnimationFrame( function animate() {
+    if (personControl == true ){	
+      draw();
+      frameDelta += clock.getDelta();
+        while (frameDelta >= INV_MAX_FPS) {				
+        player.update(INV_MAX_FPS);						
+        frameDelta -= INV_MAX_FPS;
+      }
+      requestAnimationFrame( animate );
+    }				
+});	
+	
+function draw() {
+  delta += 0.1;
+  renderer.render(scene, camera);
+}
+
+}	
+	
+ 
+
+    </script>
+</body>
+</html>
