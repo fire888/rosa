@@ -1,7 +1,7 @@
 
 # LABIRINTH ( Il nome della Rosa/Umberto Eco ) :tulip:
 
-![Screenshot](https://github.com/fire888/rosa/assets/screenshot.jpg)  
+![Screenshot](https://github.com/fire888/rosa/blob/master/assets/screenshot.jpg)  
 
 ____
 ![language](https://img.shields.io/badge/code-es6-green.svg) 
