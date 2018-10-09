@@ -62,7 +62,11 @@ floorMesh.receiveShadow = true;
 floorMesh.position.x = -300; 
 floorMesh.position.y = -2.0;		
 floorMesh.rotation.x = -0.5 * Math.PI;
-scene.add(floorMesh); 	
+scene.add(floorMesh); 
+var floorMesh2 = floorMesh.clone()
+floorMesh2.position.y = 9;
+floorMesh2.rotation.x = 0.5 * Math.PI; 
+scene.add( floorMesh2 )	
     
 	
 var delta = 0;
