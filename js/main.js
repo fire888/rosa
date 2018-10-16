@@ -23,6 +23,10 @@ const assets = {
     books: {
       map: null,
       src: 'assets/books.jpg'
+    },
+    window: {
+      map: null,
+      src: 'assets/window.png'
     }
   },
   geoms: {
@@ -55,7 +59,7 @@ const setLoadTextures = ( textures, onload ) => {
     actions.push( () => { 
       textureLoader.load( 
           textures[ key ].src, 
-        ( img ) => {
+          ( img ) => {
           textures[ key ].map = img 
           onload()    
         } 
@@ -68,20 +72,24 @@ const setLoadTextures = ( textures, onload ) => {
 const createMaterialLetter = ( text, color ) => {
   if ( assets.textures[ text ] ) return 
   let size = 100
-  var canvas = document.createElement( "canvas" )
-  var context = canvas.getContext( "2d" )
+  let canvas = document.createElement( "canvas" )
+  let context = canvas.getContext( "2d" )
   context.font = size + "pt Arial"
   context.strokeStyle = "white"
   context.textAlign = "bottom"
   context.fillStyle = "white";
   context.fillText( text, 100, canvas.height * 0.8 )
-  var texture = new THREE.Texture( canvas )
+  let texture = new THREE.Texture( canvas )
   texture.needsUpdate = true
   assets.textures[ text ] = {}
   assets.textures[ text ].map = texture
-  materials[ text ] = new THREE.MeshPhongMaterial( {
-    map: texture
-  } )   
+  materials[ text ] = new THREE.MeshBasicMaterial( {
+    color: 0xffffff,
+    opacity: 0.7,
+    alphaMap: assets.textures[ text ].map,
+    transparent: true
+  } ) 
+  materials[ text ].needsUpdate = true  
 }
   
 const setLoadGeoms = ( geoms, onload ) => {
@@ -117,9 +125,8 @@ const initMaterials = () => {
     color: 0x282115
   } )
   materials.books.map.wrapS = materials.books.map.wrapT = THREE.RepeatWrapping
-  materials.easy = new THREE.MeshPhongMaterial( {
-    color: 0xaaffff
-  } )    
+  materials.easy = new THREE.MeshPhongMaterial( { color: 0xaaffff } )
+  materials.window = new THREE.MeshPhongMaterial( { map: assets.textures.window.map } ) 
 }
 
 
@@ -174,20 +181,21 @@ const prepaerLab = () => {
   assets.geoms.lab.geom.traverse( ( child ) => {
     if ( child instanceof THREE.Mesh != true ) return
     if ( child.name == 'books' ) {
-      var mesh = new THREE.Mesh( child.geometry, materials.books )
+      let mesh = new THREE.Mesh( child.geometry, materials.books )
       scene.add( mesh )
     } else if (  child.name == 'arch' ) {
-      var mesh = new THREE.Mesh( child.geometry, materials.stone )
+      let mesh = new THREE.Mesh( child.geometry, materials.stone )
       scene.add( mesh )
-    } else if (  checkChildNameLetter( child.name ) ) {
+    } else if (  child.name == 'window' ) {
+      let mesh = new THREE.Mesh( child.geometry, materials.window )
+      scene.add( mesh )      
+    } else if ( checkChildNameLetter( child.name ) ) {
       let letter = child.name.substring( child.name.length - 1 , child.name.length )
-      console.log( letter )
       createMaterialLetter( letter )
-      console.log( materials )
-      var mesh = new THREE.Mesh( child.geometry, materials[ letter ] )
+      let mesh = new THREE.Mesh( child.geometry, materials[ letter ] )
       scene.add( mesh )              
     } else {
-      var mesh = new THREE.Mesh( child.geometry, materials.stone )
+      let mesh = new THREE.Mesh( child.geometry, materials.stone )
       scene.add( mesh )          
     }    
   } )
