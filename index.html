@@ -1,13 +1,40 @@
 <html>
 <head>
+
+<style>
+  #preloader {
+	text-align: center;
+	margin-top: 30vh;
+    font-size: 2vh;	
+  }
+  
+  .hidden {
+    display: none;
+  } 
+
+  #tester {
+    position: absolute;
+    z-index: 200;
+    color: white;
+    left: 100;
+    top: 100;
+    font-size: 3vh;
+  }
+</style>
+ 
 </head>
 
 
 <body>
+
+<div id="preloader">LOADING</div>
+<div id="tester"></div>
+
 <canvas id="myCanvas"></canvas>
 <script src="js/three.min.js"></script>
 <script src="js/OBJLoader.js"></script>
 <script src="js/FirstPersonControls.js"></script>
+<script src="js/SAT.js"></script>
 <script src="js/main.js"></script>
 	
 

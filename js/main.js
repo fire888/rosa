@@ -3,16 +3,23 @@
 
 window.onload = () => {  
   loadAssets( () => {
+    hidePreloader()
     initMaterials()  
     initScene()
     prepaerLab()
     startAnimation()
+    testSAT()
   } ) 
 }
 
 
 
 /*******************************************************************/ 
+
+const hidePreloader = () => {
+  let pr = document.getElementById( 'preloader' )
+  pr.className = 'hidden'
+}
 
 const assets = {
   textures: {
@@ -68,29 +75,6 @@ const setLoadTextures = ( textures, onload ) => {
   }
   return actions    
 }
-
-const createMaterialLetter = ( text, color ) => {
-  if ( assets.textures[ text ] ) return 
-  let size = 100
-  let canvas = document.createElement( "canvas" )
-  let context = canvas.getContext( "2d" )
-  context.font = size + "pt Arial"
-  context.strokeStyle = "white"
-  context.textAlign = "bottom"
-  context.fillStyle = "white";
-  context.fillText( text, 100, canvas.height * 0.8 )
-  let texture = new THREE.Texture( canvas )
-  texture.needsUpdate = true
-  assets.textures[ text ] = {}
-  assets.textures[ text ].map = texture
-  materials[ text ] = new THREE.MeshBasicMaterial( {
-    color: 0xffffff,
-    opacity: 0.7,
-    alphaMap: assets.textures[ text ].map,
-    transparent: true
-  } ) 
-  materials[ text ].needsUpdate = true  
-}
   
 const setLoadGeoms = ( geoms, onload ) => {
   let objLoader = new THREE.OBJLoader()
@@ -129,6 +113,28 @@ const initMaterials = () => {
   materials.window = new THREE.MeshPhongMaterial( { map: assets.textures.window.map } ) 
 }
 
+const createMaterialLetter = ( text, color ) => {
+  if ( assets.textures[ text ] ) return 
+  let size = 100
+  let canvas = document.createElement( "canvas" )
+  let context = canvas.getContext( "2d" )
+  context.font = size + "pt Arial"
+  context.strokeStyle = "white"
+  context.textAlign = "bottom"
+  context.fillStyle = "white";
+  context.fillText( text, 100, canvas.height * 0.8 )
+  let texture = new THREE.Texture( canvas )
+  texture.needsUpdate = true
+  assets.textures[ text ] = {}
+  assets.textures[ text ].map = texture
+  materials[ text ] = new THREE.MeshBasicMaterial( {
+    color: 0xffffff,
+    opacity: 0.7,
+    alphaMap: assets.textures[ text ].map,
+    transparent: true
+  } ) 
+  materials[ text ].needsUpdate = true  
+}
 
 
 
@@ -179,7 +185,10 @@ const initScene = () => {
 
 const prepaerLab = () => {
   assets.geoms.lab.geom.traverse( ( child ) => {
-    if ( child instanceof THREE.Mesh != true ) return
+    if ( child instanceof THREE.Mesh != true ) {
+      if ( checkChildName( child.name, 'room' ) ) setCollisionRoom( child )
+      return   
+    }
     if ( child.name == 'books' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.books )
       scene.add( mesh )
@@ -188,8 +197,12 @@ const prepaerLab = () => {
       scene.add( mesh )
     } else if (  child.name == 'window' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.window )
-      scene.add( mesh )      
-    } else if ( checkChildNameLetter( child.name ) ) {
+      scene.add( mesh )  
+    } else if (  child.name == 'collision' ) {
+      console.log( child )
+      let mesh = new THREE.Mesh( child.geometry, materials.window )
+      scene.add( mesh )        
+    } else if ( checkChildName( child.name, 'letter' ) ) {
       let letter = child.name.substring( child.name.length - 1 , child.name.length )
       createMaterialLetter( letter )
       let mesh = new THREE.Mesh( child.geometry, materials[ letter ] )
@@ -201,15 +214,12 @@ const prepaerLab = () => {
   } )
 }
 
-const checkChildNameLetter = v => {
-  if ( ~v.indexOf( "letter" ) ) {
+const checkChildName = ( string, val ) => {
+  if ( ~string.indexOf( val ) ) {
     return true
   } 
   return false
 }
-
-
-
 
 
 
@@ -220,8 +230,9 @@ let player, clock, INV_MAX_FPS = 0.01, frameDelta = 0
 const startAnimation = () => {
   clock = new THREE.Clock()
   player = new THREE.FirstPersonControls( camera )
-  player.movementSpeed = 100
-  player.lookSpeed = 0.1	 
+  player.movementSpeed = 7
+  player.lookSpeed = 0.1	
+  console.log( player ) 
   requestAnimationFrame( function animate() {
     draw()
     frameDelta += clock.getDelta()
@@ -234,9 +245,65 @@ const startAnimation = () => {
 } 
 	
 function draw() {
+  checkCameraCollision()
   pLight.position.x = camera.position.x
   pLight.position.z = camera.position.z  
   renderer.render( scene, camera )
+}
+
+/*******************************************************************/
+
+let arrRooms = []
+
+const setCollisionRoom = geom => {
+  let verticies = geom.geometry.attributes.position.array
+  let verts = []
+  for ( i = 0; i < verticies.length - 3 ; i += 3  ) {
+    verts.push( new SAT.Vector( verticies[ i ], verticies[ i + 2 ] ) ) 
+  }
+  let room = {
+    name: geom.name,
+    poligon: new SAT.Polygon( new SAT.Vector, verts )
+  }
+  arrRooms.push( room )
+}
+
+let tester = document.getElementById( 'tester' )
+
+const checkCameraCollision = () => {
+
+  let isWall = true  
+  let v = new SAT.Vector( player.target.x, player.target.z )
+  arrRooms.forEach( item => {
+    if ( SAT.pointInPolygon(v, item.poligon) ) { 
+      tester.innerHTML = item.name 
+      isWall = false
+    }
+  } )
+  if ( isWall ) player.moveForward = false //:  player.moveForward = true
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+const testSAT = () => {
+  var v = new SAT.Vector(1000, 10)
+  var p = new SAT.Polygon( new SAT.Vector(), [
+    new SAT.Vector(),
+    new SAT.Vector(100,0),
+    new SAT.Vector(50,75)
+  ]);
+
+  console.log( SAT.pointInPolygon(v, p) )
 }
 
 

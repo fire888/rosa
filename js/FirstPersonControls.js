@@ -10,11 +10,12 @@ THREE.FirstPersonControls = function ( cam, domElement ) {
 	this.target = new THREE.Vector3( 0, 0, 0 );
 
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
-    
+	
+	this.isMove = true
 	this.movementSpeed = 2.5;
 	this.lookSpeed = 0.005;
 
-	this.lookVertical = true;
+	this.lookVertical = false;
 	this.autoForward = false;
 	// this.invertVertical = false;
 
@@ -210,8 +211,9 @@ THREE.FirstPersonControls = function ( cam, domElement ) {
 		
 		
 
-		//var actualMoveSpeed = delta * this.movementSpeed;
-		var actualMoveSpeed = delta * 10;		
+		var actualMoveSpeed = delta * this.movementSpeed;
+		if ( ! this.isMove ) actualMoveSpeed = 0;
+		//var actualMoveSpeed = delta * 10;		
 
 	//	if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) this.cam.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
 	//	if ( this.moveBackward ) this.cam.translateZ( actualMoveSpeed );
@@ -267,9 +269,9 @@ if ( this.moveBackward ) {
 		var targetPosition = this.target,
 			position = this.cam.position;
 
-		targetPosition.x = position.x + 3 * Math.sin( this.phi ) * Math.cos( this.theta );
-		targetPosition.y = position.y + 3 * Math.cos( this.phi );	
-		targetPosition.z = position.z + 3 * Math.sin( this.phi ) * Math.sin( this.theta );
+		targetPosition.x = position.x + 1 * Math.sin( this.phi ) * Math.cos( this.theta );
+		targetPosition.y = position.y + 1 * Math.cos( this.phi );	
+		targetPosition.z = position.z + 1 * Math.sin( this.phi ) * Math.sin( this.theta );
 
 		this.cam.lookAt( targetPosition );
 
