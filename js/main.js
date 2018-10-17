@@ -33,7 +33,7 @@ const assets = {
     },
     window: {
       map: null,
-      src: 'assets/window.png'
+      src: 'assets/window.jpg'
     }
   },
   geoms: {
