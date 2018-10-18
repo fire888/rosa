@@ -3,23 +3,46 @@
 
 window.onload = () => {  
   loadAssets( () => {
-    hidePreloader()
     initMaterials()  
     initScene()
+    initButtons()
     prepaerLab()
-    startAnimation()
-    testSAT()
+    setOnResize()
+    setStartButton()
   } ) 
+}
+
+const setStartButton = () => {
+  let preloader = document.getElementById( 'preloader' )
+  preloader.className = 'hidden'
+  let startBtn = document.getElementById( 'button-start' )
+  startBtn.className = 'show'
+  startBtn.addEventListener( 'touchstart', e => {
+    if ( e.type === 'touchstart' ) {
+      let butts = document.getElementById( 'buttons' )
+      butts.style.display = 'flex'
+    }
+  } )
+  startBtn.addEventListener( 'mousedown', ( ) => {
+    let app = document.getElementById( 'app' )
+    app.className = 'show'    
+    let pr = document.getElementById( 'start-screen' )
+    pr.className = 'hidden'
+    if ( app.requestFullScreen ) {
+      app.requestFullScreen()	
+    } else if ( app.mozRequestFullScreen ) {
+      app.mozRequestFullScreen() 				
+    } else if ( app.webkitRequestFullScreen ) {
+      app.webkitRequestFullScreen()				
+    }
+    animate()
+  } )
 }
 
 
 
 /*******************************************************************/ 
 
-const hidePreloader = () => {
-  let pr = document.getElementById( 'preloader' )
-  pr.className = 'hidden'
-}
 
 const assets = {
   textures: {
@@ -140,7 +163,7 @@ const createMaterialLetter = ( text, color ) => {
 
 /*******************************************************************/
 
-let camera, scene, renderer,
+let camera, collision, scene, renderer,
 pLight
 
 const initScene = () => {
@@ -155,13 +178,19 @@ const initScene = () => {
     camera.position.y = 2
     camera.position.x = 66
     camera.position.z = 5
+    collision = new THREE.Mesh(
+      new THREE.BoxGeometry( 0.001, 0.001, 0.001 ),
+      new THREE.MeshBasicMaterial( { color: 0xff0000 } )
+    )
+    collision.position.z = -1
     scene = new THREE.Scene()
+    scene.add( camera )
+    camera.add( collision )
     scene.fog = new THREE.FogExp2( 0x1c1614, 0.05, 100 );
-
-    let lightA = new THREE.AmbientLight( 0xffffff, 0.5 )
+    let lightA = new THREE.AmbientLight( 0xffffff, 0.8 )
     lightA.position.set( 5, 5, 5 )
     scene.add( lightA )
-    pLight = new THREE.PointLight( 0x615d19, 1.5 )
+    pLight = new THREE.PointLight( 0x615d19, 1.8 )
     pLight.position.set( 0, 5, 0 )
     scene.add( pLight )
     let floorGeometry = new THREE.PlaneGeometry( 1000, 1000, 5, 5 )	
@@ -179,6 +208,14 @@ const initScene = () => {
     scene.add( floorMesh2 )	
 }
 
+const setOnResize = () => {
+  window.onresize = () => {
+    renderer.setSize( window.innerWidth, window.innerHeight )
+    camera.aspect = window.innerWidth/ window.innerHeight 
+    camera.updateProjectionMatrix()     
+  } 
+}
+
 
 
 /****************************************************************/
@@ -192,16 +229,9 @@ const prepaerLab = () => {
     if ( child.name == 'books' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.books )
       scene.add( mesh )
-    } else if (  child.name == 'arch' ) {
-      let mesh = new THREE.Mesh( child.geometry, materials.stone )
-      scene.add( mesh )
     } else if (  child.name == 'window' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.window )
-      scene.add( mesh )  
-    } else if (  child.name == 'collision' ) {
-      console.log( child )
-      let mesh = new THREE.Mesh( child.geometry, materials.window )
-      scene.add( mesh )        
+      scene.add( mesh )         
     } else if ( checkChildName( child.name, 'letter' ) ) {
       let letter = child.name.substring( child.name.length - 1 , child.name.length )
       createMaterialLetter( letter )
@@ -225,29 +255,19 @@ const checkChildName = ( string, val ) => {
 
 /*******************************************************************/
 
-let player, clock, INV_MAX_FPS = 0.01, frameDelta = 0
-
-const startAnimation = () => {
-  clock = new THREE.Clock()
-  player = new THREE.FirstPersonControls( camera )
-  player.movementSpeed = 7
-  player.lookSpeed = 0.1	
-  console.log( player ) 
-  requestAnimationFrame( function animate() {
+const animate = () => {
     draw()
-    frameDelta += clock.getDelta()
-      while ( frameDelta >= INV_MAX_FPS ) {				
-      player.update( INV_MAX_FPS )						
-      frameDelta -= INV_MAX_FPS
-    }
-    requestAnimationFrame( animate )				
-  })	
+    requestAnimationFrame( animate )	
 } 
 	
 function draw() {
-  checkCameraCollision()
   pLight.position.x = camera.position.x
   pLight.position.z = camera.position.z  
+  if ( keys.up ) { 
+    if ( ! checkCameraCollision() ) camera.translateZ( -0.15 )
+  }  
+  if ( keys.left ) camera.rotation.y += 0.02
+  if ( keys.right ) camera.rotation.y -= 0.02
   renderer.render( scene, camera )
 }
 
@@ -271,19 +291,80 @@ const setCollisionRoom = geom => {
 let tester = document.getElementById( 'tester' )
 
 const checkCameraCollision = () => {
-
-  let isWall = true  
-  let v = new SAT.Vector( player.target.x, player.target.z )
+  let isWall = true
+  let point = new THREE.Vector3()
+  collision.getWorldPosition( point ) 
+  let v = new SAT.Vector( point.x, point.z )
   arrRooms.forEach( item => {
     if ( SAT.pointInPolygon(v, item.poligon) ) { 
       tester.innerHTML = item.name 
       isWall = false
     }
   } )
-  if ( isWall ) player.moveForward = false //:  player.moveForward = true
+  if ( isWall ) { return true } else { return false }
 } 
 
 
+/*******************************************************************/
+
+const initButtons = () => {
+  let buttLeft = document.getElementById( 'button-left' )
+  buttLeft.addEventListener('touchstart', () => {
+    keys.left = true  
+  } ,false)
+  buttLeft.addEventListener('touchend', () => {
+    keys.left = false  
+  } ,false)
+  let buttRight = document.getElementById( 'button-right' )
+  buttRight.addEventListener( 'touchstart' , function() {
+    keys.right = true
+  });
+  buttRight.addEventListener( 'touchend' , function() {
+    keys.right = false
+  });
+  let buttForvard = document.getElementById( 'button-forvard' )
+  buttForvard.addEventListener( 'touchstart' , function() {
+    keys.up = true
+  });
+  buttForvard.addEventListener( 'touchend' , function() {
+    keys.up = false
+  });
+  
+} 
+
+
+/** KEYBOARD ***********************************/
+ 
+const keys = {
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+  A: false,
+  D: false,
+  B: false,
+  R: false,
+  enter: false,
+  space: false,
+  C: false
+}
+
+const keyUpdate = ( keyEvent, down ) => {
+  switch( keyEvent.keyCode ) {
+    case 38:
+      keys.up = down
+      break
+    case 37:
+      keys.left = down
+      break
+    case 39:
+      keys.right = down
+      break
+  }
+}
+
+document.addEventListener( "keydown", event => keyUpdate( event, true ) )
+document.addEventListener( "keyup", event => keyUpdate( event, false ) )
 
 
 
@@ -292,8 +373,9 @@ const checkCameraCollision = () => {
 
 
 
-
-
+/*******************************************************************/
+/*  TRESH  *********************************************************/
+/*******************************************************************/
 
 const testSAT = () => {
   var v = new SAT.Vector(1000, 10)

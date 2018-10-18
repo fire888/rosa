@@ -1,41 +1,123 @@
 <html>
 <head>
-
+  <meta name='viewport' content='width=device-width, user-scalable=no'>
 <style>
-  #preloader {
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  overflow: hidden;
+}
+
+#start-screen {
+  background-color: white;
+  position: absolute;
+  top: 0px;
+  left: 0px;  
 	text-align: center;
-	margin-top: 30vh;
-    font-size: 2vh;	
-  }
+  font-size: 2vh;
+  padding-top: 30vh;
+  min-width: 100vw;
+  min-height: 100vh;
+  font-size: 30px;
+}
+
+.start-elems {
+  margin: 2vw;
+}
   
-  .hidden {
-    display: none;
-  } 
+.hidden {
+  display: none;
+}
 
-  #tester {
-    position: absolute;
-    z-index: 200;
-    color: white;
-    left: 100;
-    top: 100;
-    font-size: 3vh;
-  }
+.show {
+  display: block;
+}
+
+#button-start {
+  margin: 0 auto;
+  color: black;     
+  border-radius: 1vw;
+  border: 2px solid black;
+  text-align: center;
+  font-size: 30px;
+  min-width: 30px;
+  padding: 1.5vh;  
+  user-select: none;
+  max-width: 100px;
+  cursor: pointer;
+}
+
+#tester {
+  position: absolute;
+  z-index: 200;
+  color: white;
+  left: 2vw;
+  top: 2vh;
+  font-size: 3vh;
+}
+
+#buttons {
+  display: none;
+  position: absolute;
+  bottom: 2vw;
+  left: 1vw;
+  width: 98vw;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#buttons-vectors {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#buttons-vectors,
+#button-forvard {
+  flex: 0 0 auto;
+}
+
+.app-button {
+  margin: 1vw;
+  color: white;
+  background-color: rgba(64, 78, 78, 0.705);     
+  border-radius: 1vw;
+  border: 2px solid white;
+  text-align: center;
+  font-size: 30px;
+  min-width: 30px;
+  padding: 1.5vh;  
+  user-select: none;
+}
 </style>
- 
 </head>
-
-
 <body>
 
-<div id="preloader">LOADING</div>
-<div id="tester"></div>
 
-<canvas id="myCanvas"></canvas>
-<script src="js/three.min.js"></script>
-<script src="js/OBJLoader.js"></script>
-<script src="js/FirstPersonControls.js"></script>
-<script src="js/SAT.js"></script>
-<script src="js/main.js"></script>
+
+<div id='start-screen'>  
+  <div id='rules' class='start-elems'>keys: &larr;, &rarr;, &uarr;</div>  
+  <div id='preloader' class='start-elems'>LOADING</div>
+  <div id='button-start' class='hidden'>START</div>
+</div>  
+<div id='app' display='hidden'>
+  <div id='tester'></div>
+  <div id='buttons'>
+    <div id='buttons-vectors'>
+      <div id='button-left' class='app-button'>&larr;</div>
+      <div id='button-right' class='app-button'>&rarr;</div>
+    </div>
+    <div id='button-forvard' class='app-button'>&uarr;</div> 
+  </div>
+  <canvas id='myCanvas'></canvas>
+</div>
+<script src='js/three.min.js'></script>
+<script src='js/OBJLoader.js'></script>
+<script src='js/SAT.js'></script>
+<script src='js/main.js'></script>
 	
 
 </body>
