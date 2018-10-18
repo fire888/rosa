@@ -21,6 +21,14 @@ const setStartButton = () => {
     if ( e.type === 'touchstart' ) {
       let butts = document.getElementById( 'buttons' )
       butts.style.display = 'flex'
+      let app = document.getElementById( 'app' )
+      if ( app.requestFullScreen ) {
+        app.requestFullScreen()	
+      } else if ( app.mozRequestFullScreen ) {
+        app.mozRequestFullScreen() 				
+      } else if ( app.webkitRequestFullScreen ) {
+        app.webkitRequestFullScreen()				
+      }
     }
   } )
   startBtn.addEventListener( 'mousedown', ( ) => {
@@ -28,13 +36,6 @@ const setStartButton = () => {
     app.className = 'show'    
     let pr = document.getElementById( 'start-screen' )
     pr.className = 'hidden'
-    if ( app.requestFullScreen ) {
-      app.requestFullScreen()	
-    } else if ( app.mozRequestFullScreen ) {
-      app.mozRequestFullScreen() 				
-    } else if ( app.webkitRequestFullScreen ) {
-      app.webkitRequestFullScreen()				
-    }
     animate()
   } )
 }
@@ -271,6 +272,7 @@ function draw() {
   renderer.render( scene, camera )
 }
 
+
 /*******************************************************************/
 
 let arrRooms = []
@@ -365,6 +367,12 @@ const keyUpdate = ( keyEvent, down ) => {
 
 document.addEventListener( "keydown", event => keyUpdate( event, true ) )
 document.addEventListener( "keyup", event => keyUpdate( event, false ) )
+
+
+
+
+
+
 
 
 
