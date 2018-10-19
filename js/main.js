@@ -176,7 +176,7 @@ const initScene = () => {
     renderer.setPixelRatio( window.devicePixelRatio )
     renderer.setSize( window.innerWidth, window.innerHeight )
     camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 0.1, 1000 )
-    camera.position.y = 2
+    camera.position.y = 1.7
     camera.position.x = 66
     camera.position.z = 5
     collision = new THREE.Mesh(
