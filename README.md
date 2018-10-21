@@ -10,7 +10,7 @@ ____
 ![License status](https://img.shields.io/badge/license-Beerware-green.svg) 
 
 
-[*PLAY*](http://js.otrisovano.ru/tests/180819Rosa/master)
+[*PLAY*](http://js.otrisovano.ru/rosa)
 
 
 
