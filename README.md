@@ -5,12 +5,12 @@
 
 ____
 ![language](https://img.shields.io/badge/code-es6-green.svg) 
-![Build status](https://img.shields.io/badge/build-5%100-red.svg) 
+![Build status](https://img.shields.io/badge/build-100%25-red.svg) 
 ![Stability status](https://img.shields.io/badge/stability-stable-green.svg) 
 ![License status](https://img.shields.io/badge/license-Beerware-green.svg) 
 
 
-[*PLAY*](http://js.otrisovano.ru/rosa)
+[*PLAY*](http://js.otrisovano.ru/tests/180819Rosa/master)
 
 
 
