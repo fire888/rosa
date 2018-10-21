@@ -50,13 +50,22 @@ body {
   cursor: pointer;
 }
 
-#tester {
+#roomNumber,
+#message {
   position: absolute;
   z-index: 200;
   color: white;
-  left: 2vw;
+  left: 0vw;
   top: 2vh;
   font-size: 3vh;
+  width: 100vw;
+  text-align: center;
+}
+
+#message {
+  padding: 1vh;
+  top: 8vh;
+  background-color: rgba(102, 87, 18, 0.705); 
 }
 
 #buttons {
@@ -67,23 +76,28 @@ body {
   width: 98vw;
   flex-direction: row;
   justify-content: space-between;
+  z-index: 100;
 }
 
-#buttons-vectors {
+#buttons-left,
+#buttons-right {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: row;
+}
+
+#buttons-left {
   justify-content: flex-start;
 }
 
-#buttons-vectors,
-#button-forvard {
-  flex: 0 0 auto;
+#buttons-right {
+  justify-content: flex-end;
 }
 
 .app-button {
   margin: 1vw;
   color: white;
-  background-color: rgba(64, 78, 78, 0.705);     
+  background-color: rgba(102, 87, 18, 0.705);     
   border-radius: 1vw;
   border: 2px solid white;
   text-align: center;
@@ -92,6 +106,21 @@ body {
   padding: 1.5vh;  
   user-select: none;
 }
+
+#map {
+  position: absolute;
+  left: 0px;
+  bottom: 0px; 
+  width: 100vw;
+  text-align: center;
+  z-index: 0; 
+}
+
+#map img {
+  width: 50vh;
+  height: 50vh;
+}
+
 </style>
 </head>
 <body>
@@ -99,25 +128,30 @@ body {
 
 
 <div id='start-screen'>  
-  <div id='rules' class='start-elems'>keys: &larr;, &rarr;, &uarr;</div>  
+  <div id='rules' class='start-elems'>keys: &larr; &rarr; &uarr;<br/> map: 'M'</div>  
   <div id='preloader' class='start-elems'>LOADING</div>
   <div id='button-start' class='hidden'>START</div>
 </div>  
-<div id='app' display='hidden'>
-  <div id='tester'></div>
+<div id='app' class='hidden'>
+  <div id='roomNumber'></div>
+  <div id='message' class='hidden'></div>
+  <div id='map' class='hidden'><img src='assets/map.png' /></div>
   <div id='buttons'>
-    <div id='buttons-vectors'>
+    <div id='buttons-left'>
       <div id='button-left' class='app-button'>&larr;</div>
       <div id='button-right' class='app-button'>&rarr;</div>
     </div>
-    <div id='button-forvard' class='app-button'>&uarr;</div> 
+    <div id='buttons-right'>
+     <div id='button-map' class='app-button'>M</div> 
+     <div id='button-forvard' class='app-button'>&uarr;</div> 
+    </div> 
   </div>
   <canvas id='myCanvas'></canvas>
 </div>
 <script src='js/three.min.js'></script>
 <script src='js/OBJLoader.js'></script>
 <script src='js/SAT.js'></script>
-<script src='js/main.js'></script>
+<script src='js/main.min.js'></script>
 	
 
 </body>
