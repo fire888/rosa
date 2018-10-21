@@ -8,10 +8,14 @@
   
   body {
     overflow: hidden;
-    font-size: 30px;
+    font-size: 25px;
     color: white;
   }
   
+
+
+  /*****************************************************************/
+
   #start-screen-wrapper {
     background-color:black;
     color: rgb(184, 184, 184);
@@ -35,30 +39,33 @@
     max-height: 600px;
   } 
 
-  .start-screen-elem,
-  #button-start {
+  .start-screen-elem {
     padding: 3vh;
     text-align: center;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     max-height: 50px;
   }
 
   #button-start {
     color: brown; 
-    border-radius: 1vw;
     border: 2px solid brown; 
     text-align: center;
-    min-width: 50px;
-    padding: 0vh 2vh 1vh 2vh;  
+    margin-top: 10px; 
+    padding: 3px;  
     user-select: none;
-    max-width: 100px;
-    max-height: 30px;
+    max-width: 140px;
+    min-width: 140px;
     cursor: pointer;
   }
   
   #button-start:hover {
     color: rgb(224, 54, 42);;
     border: 2px solid rgb(224, 54, 42);
+  }
+
+  #annotate {
+    font-size: 15px;
+    line-height: 15px; 
   }
   
   .h1 {
@@ -72,10 +79,6 @@
   a {
     color: brown; 
   }
-  
-  .start-elems {
-    margin: 2vw;
-  }
     
   .hidden {
     display: none;
@@ -85,6 +88,10 @@
     display: block;
   }
   
+
+  
+  /*****************************************************************/
+
   #roomNumber,
   #message {
     position: absolute;
@@ -93,6 +100,7 @@
     top: 2vh;
     width: 100vw;
     text-align: center;
+    user-select: none;
   }
   
   #message {
