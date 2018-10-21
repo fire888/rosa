@@ -1,0 +1,168 @@
+
+
+
+* {
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  body {
+    overflow: hidden;
+    font-size: 30px;
+    color: white;
+  }
+  
+  #start-screen-wrapper {
+    background-color:black;
+    color: rgb(184, 184, 184);
+    position: absolute;
+    top: 0px;
+    left: 0px;  
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #start-screen {
+    flex: 1 1 auto;  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-height: 600px;
+  } 
+
+  .start-screen-elem,
+  #button-start {
+    padding: 3vh;
+    text-align: center;
+    flex: 1 0 auto;
+    max-height: 50px;
+  }
+
+  #button-start {
+    color: brown; 
+    border-radius: 1vw;
+    border: 2px solid brown; 
+    text-align: center;
+    min-width: 50px;
+    padding: 0vh 2vh 1vh 2vh;  
+    user-select: none;
+    max-width: 100px;
+    max-height: 30px;
+    cursor: pointer;
+  }
+  
+  #button-start:hover {
+    color: rgb(224, 54, 42);;
+    border: 2px solid rgb(224, 54, 42);
+  }
+  
+  .h1 {
+    font-size: 40px;
+  }
+  
+  .h4 {
+    font-size: 15px;
+  }
+  
+  a {
+    color: brown; 
+  }
+  
+  .start-elems {
+    margin: 2vw;
+  }
+    
+  .hidden {
+    display: none;
+  }
+  
+  .show {
+    display: block;
+  }
+  
+  #roomNumber,
+  #message {
+    position: absolute;
+    z-index: 200;
+    left: 0vw;
+    top: 2vh;
+    width: 100vw;
+    text-align: center;
+  }
+  
+  #message {
+    padding: 1vh;
+    top: 10vh;
+  }
+  
+  #buttons {
+    display: none;
+    position: absolute;
+    bottom: 2vw;
+    left: 1vw;
+    width: 98vw;
+    flex-direction: row;
+    justify-content: space-between;
+    z-index: 100;
+  }
+  
+  #buttons-left,
+  #buttons-right {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  #buttons-left {
+    justify-content: flex-start;
+  }
+  
+  #buttons-right {
+    justify-content: flex-end;
+  }
+  
+  .app-button {
+    margin: 1vw;
+    color: white;
+    background-color: rgba(102, 87, 18, 0.705);     
+    border-radius: 1vw;
+    border: 2px solid white;
+    text-align: center;
+    font-size: 30px;
+    min-width: 40px;
+    padding: 1.5vh;  
+    user-select: none;
+  }
+  
+  #map {
+    position: absolute;
+    left: 0px;
+    bottom: 0px; 
+    width: 100vw;
+    text-align: center;
+    z-index: 0; 
+  }
+  
+  #map img {
+    width: 50vh;
+    height: 50vh;
+  }
+  
+  #endCopyright {
+    padding: 10px;
+    width: 50vh;
+    margin: 0 auto;
+    margin-top: -10vh; 
+  }
+  
+  #endCopyright a {
+    color: rgb(49, 5, 5);
+  }
+  
+
+  

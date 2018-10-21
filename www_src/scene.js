@@ -12,7 +12,10 @@ export {
   setOnResize,
   animate,
   setFuncInUpdates,
-  concatSecretAndRoomsAreas
+  concatSecretAndRoomsAreas,
+  removeFromScene,
+  checkPlayerCollision,
+  stopMoveCamera
 } 
 
 
@@ -115,7 +118,7 @@ const initMaterials = () => {
     color: 0xffffff
   } )
   materials.books.map.wrapS = materials.books.map.wrapT = THREE.RepeatWrapping
-  materials.easy = new THREE.MeshPhongMaterial( { color: 0xaaffff } )
+  materials.easy = new THREE.MeshPhongMaterial( { color: 0xffffff } )
   materials.window = new THREE.MeshPhongMaterial( { map: assets.textures.window.map } ) 
   materials.mirror = new THREE.MeshPhongMaterial( { color: 0xff00 } )   
 }
@@ -147,12 +150,12 @@ const createMaterialLetter = ( text, color ) => {
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-let camera, collisionMesh, pLight,
+let camera, collisionMesh,
 scene, renderer
   
 const initScene = () => {
   renderer = new THREE.WebGLRenderer( {
-    canvas: document.getElementById( 'myCanvas' ),
+    canvas: document.getElementById( 'webgl-canvas' ),
     antialias: true
   } )
   renderer.setClearColor( 0x000000 )
@@ -160,10 +163,8 @@ const initScene = () => {
   renderer.setSize( window.innerWidth, window.innerHeight )
   camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 0.1, 50 )
   camera.position.y = 1.7
-  //camera.position.x = 66
-  //camera.position.z = 5
-  camera.position.x = -3
-  camera.position.z = 47
+  camera.position.x = 66
+  camera.position.z = 5
   collisionMesh = new THREE.Mesh(
     new THREE.BoxGeometry( 0.001, 0.001, 0.001 ),
     new THREE.MeshBasicMaterial( { color: 0xff0000 } )
@@ -176,9 +177,9 @@ const initScene = () => {
   let lightA = new THREE.AmbientLight( 0xffffff, 1.2 )
   lightA.position.set( 5, 5, 5 )
   scene.add( lightA )
-  pLight = new THREE.PointLight( 0x615d19, 3.5 )
-  pLight.position.set( 0, 5, 0 )
-  scene.add( pLight )
+  let pLight = new THREE.PointLight( 0x615d19, 3.5 )
+  pLight.position.set( 0, 3, 0 )
+  camera.add( pLight )
   let floorGeometry = new THREE.PlaneGeometry( 1000, 1000, 5, 5 )	
   let floorMap = materials.stone.map.clone()  
   let floorMat = new THREE.MeshPhongMaterial( { map: floorMap } )
@@ -230,6 +231,8 @@ const addLabirintToScene = ( ARTEFACTS ) => {
       if ( checkChildName( child.name, 'exit' ) ) setCollisionRoom( child, 'exit' )
       if ( checkChildName( child.name, 'password' ) ) setCollisionRoom( child, 'password' )
       if ( checkChildName( child.name, 'book_area' ) ) setCollisionRoom( child, 'secretBook' )
+      if ( checkChildName( child.name, 'sdoor_area' ) ) setCollisionRoom( child, 'mirrorDoor' )
+      if ( checkChildName( child.name, 'trap_area' ) ) setCollisionRoom( child, 'trap' )
       return   
     }
     if ( child.name == 'books' ) {
@@ -237,11 +240,21 @@ const addLabirintToScene = ( ARTEFACTS ) => {
       scene.add( mesh )
     } else if (  child.name == 'window' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.window )
-      scene.add( mesh )  
+      scene.add( mesh ) 
+    } else if (  child.name == 'wood' ) {
+      let mesh = new THREE.Mesh( child.geometry, materials.wood )
+      scene.add( mesh )
+    } else if (  child.name == 'candle' ) {
+      let mesh = new THREE.Mesh( child.geometry, materials.easy )
+      scene.add( mesh )           
     } else if (  child.name == 'book' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.wood )
       scene.add( mesh )
-      ARTEFACTS.secretBook = mesh    
+      ARTEFACTS.secretBook = mesh   
+    } else if (  child.name == 'password_List' ) {
+      let mesh = new THREE.Mesh( child.geometry, materials.easy )
+      scene.add( mesh )
+      ARTEFACTS.passwordPaper = mesh     
     } else if (  child.name == 'mirror_wood' ) {
       let mesh = new THREE.Mesh( child.geometry, materials.wood )
       ARTEFACTS.secretDoor.add( mesh )     
@@ -262,17 +275,17 @@ const addLabirintToScene = ( ARTEFACTS ) => {
 }
 
 const checkChildName = ( string, val ) => {
-  if ( ~string.indexOf( val ) ) {
-    return true
-  } 
+  if ( ~string.indexOf( val ) ) return true
   return false
 }
+
+const removeFromScene = v => scene.remove( v )    
 
 
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/ 
 
-let arrRooms = [], arrSecrets = [], arrExits = [], arrPasswords = [], arrSecretBooks = []
+let arrRooms = [], arrSecrets = [], arrExits = [], arrPasswords = [], arrSecretBooks = [], arrMirrorDoor = [], arrTraps = []
 
 const setCollisionRoom = ( geom, type ) => {
   let verticies = geom.geometry.attributes.position.array
@@ -289,44 +302,46 @@ const setCollisionRoom = ( geom, type ) => {
   if ( type == 'exit' ) arrExits.push( room )
   if ( type == 'password') arrPasswords.push( room )
   if ( type == 'secretBook') arrSecretBooks.push( room )
+  if ( type == 'mirrorDoor') arrMirrorDoor.push( room )
+  if ( type == 'trap') arrTraps.push( room )
 }
 
-const concatSecretAndRoomsAreas = () => { 
-  [].push.apply( arrRooms, arrSecrets )
-}    
+const concatSecretAndRoomsAreas = () => [].push.apply( arrRooms, arrSecrets )  
  
 const checkPlayerCollision = areas => {
-    let inRoom = false
-    let point = new THREE.Vector3()
-    collisionMesh.getWorldPosition( point ) 
-    let v = new SAT.Vector( point.x, point.z )
-    let arr
-    if ( areas == 'rooms' ) arr = arrRooms
-    if ( areas == 'secrets' ) arr = arrSecrets
-    if ( areas == 'exits' ) arr = arrExits
-    if ( areas == 'passwords' ) arr = arrPasswords
-    if ( areas == 'secretBooks' ) arr = arrSecretBooks
-    arr.forEach( item => {
-      if ( SAT.pointInPolygon(v, item.poligon) ) { 
-        inRoom = item.name
-      }
-    } )
-    return inRoom
-  } 
+  let inRoom = false
+  let point = new THREE.Vector3()
+  collisionMesh.getWorldPosition( point ) 
+  let v = new SAT.Vector( point.x, point.z )
+  let arr
+  if ( areas == 'rooms' ) arr = arrRooms
+  if ( areas == 'secrets' ) arr = arrSecrets
+  if ( areas == 'exits' ) arr = arrExits
+  if ( areas == 'passwords' ) arr = arrPasswords
+  if ( areas == 'secretBooks' ) arr = arrSecretBooks
+  if ( areas == 'mirrorDoor' ) arr = arrMirrorDoor
+  if ( areas == 'traps' ) arr = arrTraps
+  arr.forEach( item => {
+    if ( SAT.pointInPolygon(v, item.poligon) ) { 
+      inRoom = item.name
+    }
+  } )
+  return inRoom
+} 
 
 
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-let currentRoom 
+let isCameraMove = true, currentRoom = ''
 
 const animate = () => {
-  pLight.position.x = camera.position.x
-  pLight.position.z = camera.position.z  
-  if ( HTML.keys.up ) updatePlayerMove()
-  if ( HTML.keys.left ) camera.rotation.y += 0.02
-  if ( HTML.keys.right ) camera.rotation.y -= 0.02
-  updateArtefacts()
+  if ( isCameraMove ) { 
+    if ( HTML.keys.up ) updatePlayerMove()
+    if ( HTML.keys.left ) camera.rotation.y += 0.02
+    if ( HTML.keys.right ) camera.rotation.y -= 0.02
+  }  
+  updateArtefacts( camera )
   renderer.render( scene, camera ) 
   if ( currentRoom == 'room_S' || currentRoom == 'room_Y') updateMirrorDoor()  
   requestAnimationFrame( animate )	  
@@ -337,7 +352,12 @@ const updatePlayerMove = () => {
   if ( ! currentRoom ) return
   updateParamsGame( checkPlayerCollision )
   camera.translateZ( -0.15 )
-  HTML.setNumberRoom( currentRoom ) //+ ' <br/>' + camera.position.x + ' / ' + camera.position.z  
+  if ( currentRoom == 'room_Door') return
+  if ( currentRoom == 'secret' ) {
+    HTML.setNumberRoom( 'Secret room' ) 
+    return   
+  } 
+  HTML.setNumberRoom( currentRoom[ currentRoom.length-1 ] ) 
 }
 
 let updateParamsGame = () => {}, updateArtefacts = () => {}
@@ -346,5 +366,8 @@ const setFuncInUpdates = ( fStatuses, fArtefacts ) => {
   updateParamsGame = fStatuses
   updateArtefacts =  fArtefacts
 }
+
+const stopMoveCamera = () => isCameraMove = false
+
 
 

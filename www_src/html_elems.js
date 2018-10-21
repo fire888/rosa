@@ -1,3 +1,6 @@
+
+
+
 export { 
   init,
   setNumberRoom,
@@ -22,9 +25,10 @@ const setNumberRoom = v => numberRoom.innerHTML = v
 
 const switchShowMap = v => map.className == 'hidden' ? map.className = 'show' : map.className = 'hidden'
 
-const setMessage = text => {
+const setMessage = ( text, isHide ) => {
   message.className = 'show'  
   message.innerHTML = text
+  if ( ! isHide ) return
   setTimeout( () => {
     message.innerHTML = '' 
     message.className = 'hidden'     
@@ -101,6 +105,7 @@ let onKeyS = () => {}
 const setActionKeyS = f => onKeyS = f
 
 
+
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 const setStartButton = ( on ) => {
@@ -125,8 +130,8 @@ const setStartButton = ( on ) => {
   startBtn.addEventListener( 'mousedown', ( ) => {
     let app = document.getElementById( 'app' )
     app.className = 'show'    
-    let pr = document.getElementById( 'start-screen' )
-    pr.className = 'hidden'
+    let pr = document.getElementById( 'start-screen-wrapper' )
+    pr.style.display = 'none'
     on()
   } )
 }

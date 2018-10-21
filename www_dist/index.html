@@ -1,136 +1,36 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <title>Labyrinth</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name='viewport' content='width=device-width, user-scalable=no'>
-<style>
-* {
-  margin: 0px;
-  padding: 0px;
-}
-
-body {
-  overflow: hidden;
-}
-
-#start-screen {
-  background-color: white;
-  position: absolute;
-  top: 0px;
-  left: 0px;  
-	text-align: center;
-  font-size: 2vh;
-  padding-top: 30vh;
-  min-width: 100vw;
-  min-height: 100vh;
-  font-size: 30px;
-}
-
-.start-elems {
-  margin: 2vw;
-}
-  
-.hidden {
-  display: none;
-}
-
-.show {
-  display: block;
-}
-
-#button-start {
-  margin: 0 auto;
-  color: black;     
-  border-radius: 1vw;
-  border: 2px solid black;
-  text-align: center;
-  font-size: 30px;
-  min-width: 30px;
-  padding: 1.5vh;  
-  user-select: none;
-  max-width: 100px;
-  cursor: pointer;
-}
-
-#roomNumber,
-#message {
-  position: absolute;
-  z-index: 200;
-  color: white;
-  left: 0vw;
-  top: 2vh;
-  font-size: 3vh;
-  width: 100vw;
-  text-align: center;
-}
-
-#message {
-  padding: 1vh;
-  top: 8vh;
-  background-color: rgba(102, 87, 18, 0.705); 
-}
-
-#buttons {
-  display: none;
-  position: absolute;
-  bottom: 2vw;
-  left: 1vw;
-  width: 98vw;
-  flex-direction: row;
-  justify-content: space-between;
-  z-index: 100;
-}
-
-#buttons-left,
-#buttons-right {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
-}
-
-#buttons-left {
-  justify-content: flex-start;
-}
-
-#buttons-right {
-  justify-content: flex-end;
-}
-
-.app-button {
-  margin: 1vw;
-  color: white;
-  background-color: rgba(102, 87, 18, 0.705);     
-  border-radius: 1vw;
-  border: 2px solid white;
-  text-align: center;
-  font-size: 30px;
-  min-width: 40px;
-  padding: 1.5vh;  
-  user-select: none;
-}
-
-#map {
-  position: absolute;
-  left: 0px;
-  bottom: 0px; 
-  width: 100vw;
-  text-align: center;
-  z-index: 0; 
-}
-
-#map img {
-  width: 50vh;
-  height: 50vh;
-}
-
-</style>
+  <link rel="stylesheet" type="text/css" href="styles/style.css" >
 </head>
+
+
+
+
+
+<!--
+********************************************************;   
+*  Author         : www.otrisovano.ru
+*  Source         : https://hithub.com/fire888/rosa
+********************************************************;
+--> 
+
+
+
+
+
 <body>
-
-
-
-<div id='start-screen'>  
-  <div id='rules' class='start-elems'>keys: &larr; &rarr; &uarr;<br/> map: 'M'</div>  
-  <div id='preloader' class='start-elems'>LOADING</div>
-  <div id='button-start' class='hidden'>START</div>
+<div id='start-screen-wrapper'> 
+  <div id='start-screen'> 
+    <div class='start-screen-elem'><span class='h1'>Labyrinth</span></div>
+    <div class='start-screen-elem'><span class='h4'>based on the book<br/><a href='https://en.wikipedia.org/wiki/The_Name_of_the_Rose' target='black'>"The Name of the Rose"</a> Umberto Eco</span></div>
+    <div class='start-screen-elem'>&larr; &rarr; &uarr; M</div>  
+    <div class='start-screen-elem' id='preloader'>loading...</div>
+    <div id='button-start' class='hidden'>start</div>
+  </div>  
 </div>  
 <div id='app' class='hidden'>
   <div id='roomNumber'></div>
@@ -146,13 +46,11 @@ body {
      <div id='button-forvard' class='app-button'>&uarr;</div> 
     </div> 
   </div>
-  <canvas id='myCanvas'></canvas>
+  <canvas id='webgl-canvas'></canvas>
 </div>
 <script src='js/three.min.js'></script>
 <script src='js/OBJLoader.js'></script>
 <script src='js/SAT.js'></script>
 <script src='js/main.min.js'></script>
-	
-
 </body>
 </html>
