@@ -8,7 +8,6 @@
   
   body {
     overflow: hidden;
-    font-size: 25px;
     color: white;
   }
   
@@ -31,6 +30,7 @@
   }
 
   #start-screen {
+    font-size: 25px;
     flex: 1 1 auto;  
     display: flex;
     flex-direction: column;
@@ -47,6 +47,7 @@
   }
 
   #button-start {
+    font-size: 25px;
     color: brown; 
     border: 2px solid brown; 
     text-align: center;
@@ -73,7 +74,8 @@
   }
   
   .h4 {
-    font-size: 15px;
+    font-size: 2vh;
+    line-height: 1.5;
   }
   
   a {
@@ -102,12 +104,32 @@
     text-align: center;
     user-select: none;
   }
-  
-  #message {
-    padding: 1vh;
-    top: 10vh;
+
+  #roomNumber {
+    font-size: 30px;
   }
   
+  #message {
+    top: 10vh;
+  }
+
+  #endCopyright {
+    width: 50vh;
+    margin: 0 auto;
+    margin-top: -13vh;
+    height: 0.5vh;    
+    font-size: 2vh;
+    line-height: 1.5;
+  }
+
+  #endCopyright a {
+    color: rgb(43, 20, 20);
+  }
+  
+
+
+  /*****************************************************************/
+
   #buttons {
     display: none;
     position: absolute;
@@ -161,16 +183,7 @@
     height: 50vh;
   }
   
-  #endCopyright {
-    padding: 10px;
-    width: 50vh;
-    margin: 0 auto;
-    margin-top: -10vh; 
-  }
-  
-  #endCopyright a {
-    color: rgb(49, 5, 5);
-  }
+
   
 
   

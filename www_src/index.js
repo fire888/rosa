@@ -109,9 +109,10 @@ const messages = {
   findPass: '<img src="assets/pass.png" style="width: 50vh; height: auto;"/>',
   findBook: '<img src="assets/book.png" style="width: 50vh; height: auto;"/>',
   findExit: '<img src="assets/exit_message.png" style="width: 50vh; height: auto;"/><br/>' + 
-    '<div id="endCopyright"><span class="h4"><a href="http://otrisovano.ru" target="blank">&copy; www.otrisovano.ru</a><br/>' + 
-    '<a href="https://github.com/fire888/rosa" target="blank">github</a></span></div>',
-  lose: '<img src="assets/rip.png" style="width: 50vh; height: auto;"/>'
+    '<div id="endCopyright"><a href="http://otrisovano.ru" target="blank">&copy; www.otrisovano.ru</a><br/>' + 
+    '<a href="https://github.com/fire888/rosa" target="blank">github</a></div>',
+  lose: '<img src="assets/rip.png" style="width: 50vh; height: auto;"/>' + 
+    '<div id="endCopyright"><a href="http://js.otrisovano.ru/rosa">Restart</a></div>'  
 } 
 
 
