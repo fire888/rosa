@@ -14,6 +14,8 @@ export {
 let numberRoom, map, message
 
 const init = () => {
+ window.oncontextmenu = () => { return false}
+ document.oncontextmenu = () => { return false }
  numberRoom = document.getElementById( 'roomNumber' )
  map = document.getElementById( 'map' )
  message = document.getElementById( 'message' )
